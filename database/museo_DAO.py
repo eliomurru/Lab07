@@ -8,6 +8,20 @@ from model.museoDTO import Museo
 
 class MuseoDAO:
     def __init__(self):
-        pass
+        self.cnx = ConnessioneDB.get_connection()
 
-    # TODO
+    def get_all_musei(self):
+        try:
+            cursor = self.cnx.cursor()
+            query = "SELECT * FROM museo"
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+            if not result:
+                return None
+
+            musei = [Museo(*m) for m in result]
+            return musei
+
+        except Exception:
+            return None

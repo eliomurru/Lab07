@@ -18,10 +18,45 @@ class Controller:
         self.epoca_selezionata = None
 
     # POPOLA DROPDOWN
-    # TODO
+    def popola_dropdown(self):
+        musei = self._model.get_musei()
+        epoche = self._model.get_epoche()
+        if musei:
+            musei_opts = [ft.dropdown.Option("Nessun filtro")] + [ft.dropdown.Option(m.nome) for m in musei]
+        else:
+            musei_opts = [ft.dropdown.Option("Nessun filtro")]
+        if epoche:
+            epoche_opts = [ft.dropdown.Option("Nessun filtro")] + [ft.dropdown.Option(e) for e in epoche]
+        else:
+            epoche_opts = [ft.dropdown.Option("Nessun filtro")]
+        self._view.museo_dropdown.options = musei_opts
+        self._view.epoca_dropdown.options = epoche_opts
+
+        self._view.update()
 
     # CALLBACKS DROPDOWN
-    # TODO
+    def on_museo_change(self, e):
+        """Memorizza il museo selezionato dall’utente."""
+        self.museo_selezionato = e.control.value
+
+    def on_epoca_change(self, e):
+        """Memorizza l’epoca selezionata dall’utente."""
+        self.epoca_selezionata = e.control.value
 
     # AZIONE: MOSTRA ARTEFATTI
-    # TODO
+    def show_artefatti(self, e):
+        """
+        Mostra gli artefatti in base ai filtri selezionati.
+        """
+        artefatti = self._model.get_artefatti_filtrati(
+            museo=self.museo_selezionato,
+            epoca=self.epoca_selezionata
+        )
+        self._view.lista_artefatti.controls.clear()
+        if not artefatti:
+            self._view.show_alert("Nessun artefatto trovato per i criteri selezionati.")
+        else:
+            for a in artefatti:
+                self._view.lista_artefatti.controls.append(ft.Text(str(a)))
+
+        self._view.page.update()
