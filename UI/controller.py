@@ -36,12 +36,12 @@ class Controller:
 
     # CALLBACKS DROPDOWN
     def on_museo_change(self, e):
-        """Memorizza il museo selezionato dall’utente."""
-        self.museo_selezionato = e.control.value
+        value = e.control.value
+        self.museo_selezionato = None if value == "Nessun filtro" else value
 
     def on_epoca_change(self, e):
-        """Memorizza l’epoca selezionata dall’utente."""
-        self.epoca_selezionata = e.control.value
+        value = e.control.value
+        self.epoca_selezionata = None if value == "Nessun filtro" else value
 
     # AZIONE: MOSTRA ARTEFATTI
     def show_artefatti(self, e):

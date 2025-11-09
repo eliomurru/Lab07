@@ -57,18 +57,19 @@ class ArtefattoDAO:
             return None
 
     def get_artefatti_filtrati(self, id_museo=None, epoca=None):
-        try:
-            cursor = self.cnx.cursor()
-            query = """
-                SELECT * FROM artefatto
-                WHERE id_museo = COALESCE(%s, id_museo)
-                  AND epoca = COALESCE(%s, epoca);
-            """
-            cursor.execute(query, (id_museo, epoca))
-            result = cursor.fetchall()
-            if not result:
-                return None
-            ArtefattoList = [Artefatto(*a) for a in result]
-            return ArtefattoList
-        except Exception:
+        cursor = self.cnx.cursor()
+
+        query = """
+            SELECT *
+            FROM artefatto
+            WHERE (%s IS NULL OR id_museo = %s)
+              AND (%s IS NULL OR epoca = %s)
+        """
+        cursor.execute(query, (id_museo, id_museo, epoca, epoca))
+        result = cursor.fetchall()
+
+        if not result:
             return None
+
+        artefatti = [Artefatto(*row) for row in result]
+        return artefatti
